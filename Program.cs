@@ -18,11 +18,11 @@ namespace Unit_test_ИС
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            connection = new SqlConnection(); //Создание объекта подключения
-            connection.ConnectionString = @"Data Source=DESKTOP-467M70L\SQLEXPRESS;Initial Catalog=UnitTest;Integrated Security=True;Connect Timeout=5;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";  //Строка подключения
+            ClassTotal.connection = new SqlConnection(); //Создание объекта подключения
+            ClassTotal.connection.ConnectionString = ClassTotal.connectionString;
             try
             {
-                connection.Open();      //Опасная команда
+                ClassTotal.connection.Open();      //Опасная команда
                 MessageBox.Show("Связь с сервером установлена");
                 Application.Run(new Form1());
 
@@ -43,7 +43,7 @@ namespace Unit_test_ИС
             }
             finally
             {
-                if (connection.State == ConnectionState.Open) connection.Close();
+                if (ClassTotal.connection.State == ConnectionState.Open) ClassTotal.connection.Close();
             }
         }
         public static SqlConnection connection;
