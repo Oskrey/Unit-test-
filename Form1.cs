@@ -33,7 +33,6 @@ namespace Unit_test_ИС
             da.SelectCommand = new SqlCommand(query, ClassTotal.connection);
             da.Fill(ds, "Name");
             dataGridView1.DataSource = ds.Tables["Name"];
-
             dataGridView1.DataSource = ds.Tables[0];
         }
 
