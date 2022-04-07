@@ -23,7 +23,6 @@ namespace Unit_test_ИС
             try
             {
                 ClassTotal.connection.Open();      //Опасная команда
-                MessageBox.Show("Связь с сервером установлена");
                 Application.Run(new Form1());
 
             }

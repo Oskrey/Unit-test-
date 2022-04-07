@@ -20,58 +20,86 @@ namespace Unit_test_ИС
         {
             InitializeComponent();
         }
-
-        private void query1(object sender, EventArgs e)
+        public void query1(string name)
         {
             string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название, Номенклатура.Количество " +
                 "FROM [Торговые точки] " +
                 "JOIN Номенклатура " +
                 "ON Номенклатура.[ID торговой точки] = [Торговые точки].[ID Торговой точки] " +
-                "WHERE [Торговые точки].[Название] = '" + textBox1.Text + "'";
-            DataSet ds = new DataSet();
-            SqlDataAdapter da = new SqlDataAdapter();
-            da.SelectCommand = new SqlCommand(query, ClassTotal.connection);
-            da.Fill(ds, "Name");
-            dataGridView1.DataSource = ds.Tables["Name"];
-            dataGridView1.DataSource = ds.Tables[0];
+                "WHERE [Торговые точки].[Название] = '" + name + "'";
+            setter(query);            
         }
-
-        private void query2(object sender, EventArgs e)
-        { 
+        public void query2(string IDтовара, string IDпоставщика, DateTime from, DateTime to)
+        {
             string query = "";
             if (!checkBox3.Checked)
-             query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название as [Название поставщика], [Товары в поставке].Название as [Название товара], [Товары в поставке].Количество, [Товары в поставке].Цена " +
-                    "FROM Поставки JOIN Поставщики " +
-                    "ON Поставщики.[ID поставщика] = Поставки.[ID поставщика] " +
-                    "join[Товары в поставке] " +
-                    "on[Товары в поставке].[[ID заказа] = Поставки.[ID заказа] " +
-                    "Where[ID товара] = '"+ textBoxТовар.Text + "' and Поставки.[ID поставщика] = '" + textBoxПоставщик.Text + "'";
+                query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название as [Название поставщика], [Товары в поставке].Название as [Название товара], [Товары в поставке].Количество, [Товары в поставке].Цена " +
+                       "FROM Поставки JOIN Поставщики " +
+                       "ON Поставщики.[ID поставщика] = Поставки.[ID поставщика] " +
+                       "join[Товары в поставке] " +
+                       "on[Товары в поставке].[ID заказа] = Поставки.[ID заказа] " +
+                       "Where[ID товара] = '" + IDтовара + "' and Поставки.[ID поставщика] = '" + IDпоставщика + "'";
             else
-            query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название as [Название поставщика], [Товары в поставке].Название as [Название товара], [Товары в поставке].Количество, [Товары в поставке].Цена " +
-                    "FROM Поставки JOIN Поставщики " +
-                    "ON Поставщики.[ID поставщика] = Поставки.[ID поставщика] " +
-                    "join[Товары в поставке] " +
-                    "on[Товары в поставке].[[ID заказа] = Поставки.[ID заказа] " +
-                    "Where[ID товара] = '" + textBoxТовар.Text + "' and Поставки.[ID поставщика] = '" + textBoxПоставщик.Text + "' " +
-                    "and [Дата поставки] between '"+dateTimePicker1.Value.Date+ "' and '" + dateTimePicker2.Value.Date + "'";
+                query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название as [Название поставщика], [Товары в поставке].Название as [Название товара], [Товары в поставке].Количество, [Товары в поставке].Цена " +
+                        "FROM Поставки JOIN Поставщики " +
+                        "ON Поставщики.[ID поставщика] = Поставки.[ID поставщика] " +
+                        "join[Товары в поставке] " +
+                        "on[Товары в поставке].[ID заказа] = Поставки.[ID заказа] " +
+                        "Where[ID товара] = '" + IDтовара + "' and Поставки.[ID поставщика] = '" + IDпоставщика + "' " +
+                        "and [Дата поставки] between '" + from + "' and '" + to + "'";
 
-            DataSet ds = new DataSet();
-            SqlDataAdapter da = new SqlDataAdapter();
-            da.SelectCommand = new SqlCommand(query, ClassTotal.connection);
-            da.Fill(ds, "name_table");
-            dataGridView1.DataSource = ds.Tables["name_table"];
-            dataGridView1.DataSource = ds.Tables[0];
+            setter(query);
         }
-
-        private void query3(object sender, EventArgs e)
+        public void query3(string IDзаказа)
         {
-            string query = "SELECT * FROM Поставки WHERE [ID заказа] = '" + textBox2.Text + "'";
+            string query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название " +
+                "FROM Поставки " +
+                "join Поставщики  " +
+                "on Поставки.[ID поставщика] = Поставщики.[ID поставщика] " +
+                "WHERE [ID заказа] = '" + IDзаказа + "'";
+            setter(query);
+        }
+        public void setter(string text)
+        {
             DataSet ds = new DataSet();
             SqlDataAdapter da = new SqlDataAdapter();
-            da.SelectCommand = new SqlCommand(query, ClassTotal.connection);
+            da.SelectCommand = new SqlCommand(text, ClassTotal.connection);
             da.Fill(ds, "Name");
             dataGridView1.DataSource = ds.Tables["Name"];
             dataGridView1.DataSource = ds.Tables[0];
+        }
+        private void buttonQuery1(object sender, EventArgs e)
+        {
+            query1(textBoxМагазин.Text);
+        }
+
+        private void buttonQuery2(object sender, EventArgs e)
+        {
+            query2(textBoxТовар.Text, textBoxПоставщик.Text, dateTimePickerОт.Value.Date, dateTimePickerДо.Value.Date);
+        }
+
+        private void buttonQuery3(object sender, EventArgs e)
+        {
+            query3(textBox2.Text);
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox3.Checked)
+            {
+                labelОт.Visible = true;
+                labelДо.Visible = true;
+                dateTimePickerОт.Visible = true;
+                dateTimePickerДо.Visible = true;
+
+            }
+            else
+            {
+                labelОт.Visible = false;
+                labelДо.Visible = false;
+                dateTimePickerОт.Visible = false;
+                dateTimePickerДо.Visible = false;
+            }
         }
     }
 }
