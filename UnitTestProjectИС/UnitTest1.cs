@@ -52,6 +52,14 @@ namespace ИСUnitTest
 
             //act
             form.query1("Название точки");
+            DataSet dss = new DataSet("1");
+            foreach (DataGridViewRow row in form.dataGridView1.Rows)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dss["1"].Rows[row.Index][cell.ColumnIndex] = cell.Value;
+                }
+            }
             while (reader.HasRows)
             {
                 reader.Read();
