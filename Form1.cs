@@ -20,7 +20,7 @@ namespace Unit_test_ИС
         {
             InitializeComponent();
         }
-        public DataSet query1(string name)
+        public void query1(string name)
         {
             string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название, Номенклатура.Количество " +
                 "FROM [Торговые точки] " +

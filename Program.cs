@@ -45,7 +45,6 @@ namespace Unit_test_ИС
                 if (ClassTotal.connection.State == ConnectionState.Open) ClassTotal.connection.Close();
             }
         }
-        public static SqlConnection connection;
 
     }
 }
