@@ -20,14 +20,14 @@ namespace Unit_test_ИС
         {
             InitializeComponent();
         }
-        public void query1(string name)
+        public DataSet query1(string name)
         {
             string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название, Номенклатура.Количество " +
                 "FROM [Торговые точки] " +
                 "JOIN Номенклатура " +
                 "ON Номенклатура.[ID торговой точки] = [Торговые точки].[ID Торговой точки] " +
                 "WHERE [Торговые точки].[Название] = '" + name + "'";
-            setter(query);            
+            setter(query);
         }
         public void query2(string IDтовара, string IDпоставщика, DateTime from, DateTime to)
         {
@@ -64,8 +64,7 @@ namespace Unit_test_ИС
             DataSet ds = new DataSet();
             SqlDataAdapter da = new SqlDataAdapter();
             da.SelectCommand = new SqlCommand(text, ClassTotal.connection);
-            da.Fill(ds, "Name");
-            dataGridView1.DataSource = ds.Tables["Name"];
+            da.Fill(ds);
             dataGridView1.DataSource = ds.Tables[0];
         }
         private void buttonQuery1(object sender, EventArgs e)
