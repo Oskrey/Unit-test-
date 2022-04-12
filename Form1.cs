@@ -22,11 +22,12 @@ namespace Unit_test_ИС
         }
         public void query1(string name)
         {
-            string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название, Номенклатура.Количество " +
-                "FROM [Торговые точки] " +
-                "JOIN Номенклатура " +
-                "ON Номенклатура.[ID торговой точки] = [Торговые точки].[ID Торговой точки] " +
-                "WHERE [Торговые точки].[Название] = '" + name + "'";
+            //string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название as [Название товара], Номенклатура.Количество " +
+            //    "FROM [Торговые точки] " +
+            //    "JOIN Номенклатура " +
+            //    "ON Номенклатура.[ID торговой точки] = [Торговые точки].[ID Торговой точки] " +
+            //    "WHERE [Торговые точки].[Название] = '" + name + "'";
+            string query = " select [ID торговой точки] from[Торговые точки]";
             setter(query);
         }
         public void query2(string IDтовара, string IDпоставщика, DateTime from, DateTime to)
@@ -99,6 +100,36 @@ namespace Unit_test_ИС
                 dateTimePickerОт.Visible = false;
                 dateTimePickerДо.Visible = false;
             }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SqlCommand com = new SqlCommand();
+            com.Connection = ClassTotal.connection;
+            com.CommandText = "select [ID торговой точки] from [Торговые точки]";
+            int id = -1;
+            SqlDataReader reader = com.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    id = (int)reader[0] + 1;
+                }
+            }
+            reader.Close();
+            textBox1.Text = id.ToString();
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
