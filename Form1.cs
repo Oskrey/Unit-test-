@@ -126,34 +126,102 @@ namespace Unit_test_ИС
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
 
-        }
 
-        private void button4_Click(object sender, EventArgs e)
+
+
+
+
+
+        string верноеНазваниеТочки = "Название точки";
+        string верноеIDтовара = "99";
+        string верноеНазваниеТовара = "test";
+        string верноеНазваниеПоставщика = "тестовый чел";
+        string верноеКоличество = "200";
+        string вернаяЦенаВПоставке = "1000";
+        DateTime вернаяДатаДТ = new DateTime(2020, 01, 01);
+        public int getID(string name)
         {
+            SqlConnection sc = new SqlConnection(ClassTotal.connectionString);
             SqlCommand com = new SqlCommand();
-            com.Connection = ClassTotal.connection;
-            com.CommandText = "select [ID торговой точки] from [Торговые точки]";
+            sc.Open();
+            com.Connection = sc;
+            //------------------------------Получение id торговой точки
+            com.CommandText = "select * from [" + name + "]";
             int id = -1;
             SqlDataReader reader = com.ExecuteReader();
-
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    id = (int)reader[0] + 1;
+                    id = (int)reader[0];
                 }
             }
             reader.Close();
-            textBox1.Text = id.ToString();
 
+            //com.CommandText = "dbcc checkident('Торговые точки', RESEED, " + id + ")";
+            //    com.ExecuteNonQuery();
+            sc.Close();
+            return id;
+        }
+        public void insertAll()
+        {
+            SqlConnection sc = new SqlConnection(ClassTotal.connectionString);
+            SqlCommand com = new SqlCommand();
+            sc.Open();
+            com.Connection = sc;
+
+            //------------------------------Вносим тестовые данные
+            string clear = " dbcc checkident('Торговые точки', RESEED, " + getID("Торговые точки") + ")"
+                + " dbcc checkident('Поставки', RESEED, " + getID("Поставки") + ")"
+                + " dbcc checkident('Поставщики', RESEED, " + getID("Поставщики") + ")";
+            com.CommandText = clear;
+            com.ExecuteNonQuery();
+
+            string insertТорговыеТочки = " insert into [Торговые точки] values('" + верноеНазваниеТочки + "', 'Адрес точки')";
+            string insertПоставщики = " insert into Поставщики values ('" + верноеНазваниеПоставщика + "')";
+            string insertПоставки = " insert into Поставки values ('01.01.2020', " + (getID("Поставщики") + 1) + ")";
+            string insertТоварыВПоставке = " insert into [Товары в поставке] values ('" + (getID("Поставки") + 1) + "', '" + верноеIDтовара + "', '" + верноеНазваниеТовара + "', '" + верноеКоличество + "','" + вернаяЦенаВПоставке + "')";
+            string insertНоменклатура = " insert into Номенклатура values ('" + верноеIDтовара + "', '" + (getID("Поставки") + 1) + "', '" + (getID("Торговые точки") + 1) + "', '" + верноеНазваниеТовара + "', '100', + '" + верноеКоличество + "')";
+
+            com.CommandText = insertТорговыеТочки + insertПоставщики + insertПоставки + insertТоварыВПоставке + insertНоменклатура;
+            com.ExecuteNonQuery();
+            sc.Close();
+        }
+        public void deleteAll()
+        {
+            SqlConnection sc = new SqlConnection(ClassTotal.connectionString);
+            SqlCommand com = new SqlCommand();
+            //------------------------------Чистим за собой
+            sc.Open();
+            com.Connection = sc;
+            string clearПоставщики = " delete from [Поставщики] where Название = '" + верноеНазваниеПоставщика + "'";
+
+            string clearНоменклатура = " delete from Номенклатура where Название = '" + верноеНазваниеТовара + "'";
+            string clearПоставки = " delete from Поставки where [Дата поставки] = '2020-01-01'";
+
+            string clearТоварыВПоставке = " delete from [Товары в поставке] where Название = '" + верноеНазваниеТовара + "'";
+
+            string clearТорговыеТочки = " delete from [Торговые точки] where Название = '" + верноеНазваниеТочки + "'";
+
+            string clear = " dbcc checkident('Торговые точки', RESEED, " + getID("Торговые точки") + ")"
+                + " dbcc checkident('Поставки', RESEED, " + getID("Поставки") + ")"
+                + " dbcc checkident('Поставщики', RESEED, " + getID("Поставщики") + ")";
+
+            com.CommandText = clearНоменклатура + clearТоварыВПоставке + clearПоставки + clearПоставщики + clearТорговыеТочки;
+            com.ExecuteNonQuery();
+            com.CommandText = clear;
+            com.ExecuteNonQuery();
+            sc.Close();
+        }
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            insertAll();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void button5_Click(object sender, EventArgs e)
         {
-
+            deleteAll();
         }
     }
 }
