@@ -18,6 +18,7 @@ namespace ИСUnitTest
             SqlCommand com = new SqlCommand();
             sc.Open();
             com.Connection = sc;
+            
             //------------------------------Получение id торговой точки
             com.CommandText = "select [ID торговой точки] from [Торговые точки]";
             int idТорговойТочки = -1;
@@ -56,6 +57,8 @@ namespace ИСUnitTest
                 }
             }
             reader.Close();
+            com.CommandText = "dbcc checkident('Торговые точки', RESEED, " + (idТорговойТочки - 1) + ") dbcc checkident('Поставщики', RESEED, " + (idПоставщика - 1) + ") dbcc checkident('Поставки', RESEED, " + (idЗаказа - 1) + ")";
+            com.ExecuteNonQuery();
             //------------------------------Вносим тестовые данные
 
             string верноеНазвание = "Название точки";
@@ -69,8 +72,8 @@ namespace ИСUnitTest
             string fourthInsert = " insert into Номенклатура values ('"+верноеIDтовара+"', '"+idЗаказа+"', '" + idТорговойТочки + "', '"+ верноеНазваниеТовара+"', '100', '"+ верноеКоличество+"')";
             
             
-            com.CommandText = (firstInsert + secondInsert + thirdInsert+fourthInsert);
-                com.ExecuteNonQuery();
+            com.CommandText = firstInsert + secondInsert + thirdInsert+fourthInsert;
+            com.ExecuteNonQuery();
 
 
             //------------------------------Вызываем нашу программу
@@ -86,14 +89,14 @@ namespace ИСUnitTest
 
 
             //------------------------------Чистим за собой
-
-            string clear = " delete from [Торговые точки] where [ID торговой точки] = " + idТорговойТочки +
-                " dbcc checkident('Торговые точки')";
-            string clear1 = " delete from Номенклатура where Название = " + верноеНазваниеТовара;
+            string clear = " delete from Номенклатура where Название = '" + верноеНазваниеТовара+"'";
+            string clear1= " delete from [Торговые точки] where [ID торговой точки] = " + idТорговойТочки +
+                " dbcc checkident('Торговые точки', RESEED, " + (idТорговойТочки - 1) + ")";
+           
             string clear2 = " delete from Поставки where [ID заказа] = " + idЗаказа +
-                " dbcc checkident('Торговые точки')";
+                " dbcc checkident('Поставки', RESEED, " + (idЗаказа - 1) + ")";
             string clear3 = " delete from [Поставщики] where [ID поставщика] = " + idПоставщика +
-                " dbcc checkident('Торговые точки')";
+                " dbcc checkident('Поставщики', RESEED, " + (idПоставщика - 1) + ")";
             com.CommandText = clear+clear1+clear2+clear3;
             com.ExecuteNonQuery();
             sc.Close();

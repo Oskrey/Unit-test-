@@ -22,12 +22,11 @@ namespace Unit_test_ИС
         }
         public void query1(string name)
         {
-            //string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название as [Название товара], Номенклатура.Количество " +
-            //    "FROM [Торговые точки] " +
-            //    "JOIN Номенклатура " +
-            //    "ON Номенклатура.[ID торговой точки] = [Торговые точки].[ID Торговой точки] " +
-            //    "WHERE [Торговые точки].[Название] = '" + name + "'";
-            string query = " select [ID торговой точки] from[Торговые точки]";
+            string query = "SELECT [Торговые точки].[Название], Номенклатура.[ID товара], Номенклатура.Название as [Название товара], Номенклатура.Количество " +
+                "FROM [Торговые точки] " +
+                "JOIN Номенклатура " +
+                "ON Номенклатура.[ID торговой точки] = [Торговые точки].[ID Торговой точки] " +
+                "WHERE [Торговые точки].[Название] = '" + name + "'";
             setter(query);
         }
         public void query2(string IDтовара, string IDпоставщика, DateTime from, DateTime to)
@@ -62,6 +61,31 @@ namespace Unit_test_ИС
         }
         public void setter(string text)
         {
+            ClassTotal.connection = new SqlConnection(); //Создание объекта подключения
+            ClassTotal.connection.ConnectionString = ClassTotal.connectionString;
+            try
+            {
+                ClassTotal.connection.Open();      //Опасная команда
+
+            }
+            catch (SqlException ex)     //Обработка сбоя при подключении
+            {
+                switch (ex.Number)      //Номер ошибки
+                {
+                    case 17: MessageBox.Show("Неверное имя сервера"); break;
+                    case 4060: MessageBox.Show("Неверное имя БД"); break;
+                    case 18456: MessageBox.Show("Неверное имя пользователя или пароль"); break;
+                }
+                MessageBox.Show(ex.Message + Environment.NewLine + "Уровень ошибки " + ex.Class); return;
+            }
+            catch (Exception ex)            //Общий сбой при подключении
+            {
+                MessageBox.Show("Ошибка подключения " + ex.Message); return;
+            }
+            finally
+            {
+                if (ClassTotal.connection.State == ConnectionState.Open) ClassTotal.connection.Close();
+            }
             DataSet ds = new DataSet();
             SqlDataAdapter da = new SqlDataAdapter();
             da.SelectCommand = new SqlCommand(text, ClassTotal.connection);
