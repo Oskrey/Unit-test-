@@ -52,12 +52,22 @@ namespace Unit_test_ИС
         }
         public void query3(string IDзаказа)
         {
-            string query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название " +
-                "FROM Поставки " +
-                "join Поставщики  " +
-                "on Поставки.[ID поставщика] = Поставщики.[ID поставщика] " +
-                "WHERE [ID заказа] = '" + IDзаказа + "'";
-            setter(query);
+            bool t = true;
+            foreach (char c in IDзаказа)
+            {
+                if (c < '0' || c > '9')
+                    t= false;
+            }
+
+            if (t)
+            {
+                string query = "SELECT Поставки.[ID заказа], Поставки.[Дата поставки], Поставщики.Название " +
+                    "FROM Поставки " +
+                    "join Поставщики  " +
+                    "on Поставки.[ID поставщика] = Поставщики.[ID поставщика] " +
+                    "WHERE [ID заказа] = '" + IDзаказа + "'";
+                setter(query);
+            }
         }
         public void setter(string text)
         {
